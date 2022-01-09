@@ -58,9 +58,10 @@ int main(){
         // Setup the spi for 8 bit data, high steady state clock,
         // second edge capture, with a 12MHz clock rate
         spi.format(8,0);           
-        spi.frequency(12000000);
+        spi.frequency(2000000); //  1 to 4 MHz recommend for the adc081s021
         // ready to wait the conversion start
         alsCS.write(1);
+        ThisThread::sleep_for(1ms);
 
     while (true) {
      if(sw2.read() == 0){
@@ -95,11 +96,13 @@ int getALS(){
     
     // Begin the conversion process and serial data output
     alsCS.write(0); 
+    ThisThread::sleep_for(1ms);
     // Reading two 8bit bytes by writing two dymmy 8bit bytes
     alsByte0 = spi.write(0x00);
     alsByte1 = spi.write(0x00);
     // End of serial data output and back to tracking mode
     alsCS.write(1);
+    ThisThread::sleep_for(1ms);
     // Check the http://www.ti.com/lit/ds/symlink/adc081s021.pdf
     // The data looks like 0000AAAA AAAA0000 on the alsByte0 alsByte1
     printf("alsByte0 alsByte1 in hexadecimal %X %X\r\n",alsByte0, alsByte1); 
